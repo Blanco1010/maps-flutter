@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Material App',
-      home: LoagindPage(),
+      home: AccesGpsPage(),
       routes: {
         'map': (_) => MapGpsPage(),
         'loading': (_) => LoagindPage(),
