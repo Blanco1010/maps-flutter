@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maps_app/helpers/helpers.dart';
+import 'package:maps_app/pages/acces_gps_page.dart';
 import 'package:maps_app/pages/map_gps_page.dart';
 
 class LoagindPage extends StatelessWidget {
@@ -23,9 +24,14 @@ class LoagindPage extends StatelessWidget {
     //TODO: Permisse GPS
     //TODO: Gps is active
 
+    // await Future.delayed(Duration(milliseconds: 1000), () {
+    //   Navigator.pushReplacement(
+    //       context, navigateMapFadein(context, MapGpsPage()));
+    // });
+
     await Future.delayed(Duration(milliseconds: 1000), () {
       Navigator.pushReplacement(
-          context, navigateMapFadein(context, MapGpsPage()));
+          context, navigateMapFadein(context, AccesGpsPage()));
     });
   }
 }
