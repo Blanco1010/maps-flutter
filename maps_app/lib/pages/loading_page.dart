@@ -29,6 +29,7 @@ class _LoagindPageState extends State<LoagindPage> with WidgetsBindingObserver {
     print('======>  $state ');
 
     if (state == AppLifecycleState.resumed) {
+      //Return a bool value when location service are enable in the devices.
       if (await Geolocator.isLocationServiceEnabled()) {
         Navigator.pushReplacement(
             context, navigateMapFadein(context, MapGpsPage()));
