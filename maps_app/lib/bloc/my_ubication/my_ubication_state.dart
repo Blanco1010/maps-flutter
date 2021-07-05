@@ -2,8 +2,8 @@ part of 'my_ubication_bloc.dart';
 
 @immutable
 class MyUbicationState {
-  final bool? following;
-  final bool? existUbication;
+  final bool following;
+  final bool existUbication;
   final LatLng? ubication;
 
   MyUbicationState({

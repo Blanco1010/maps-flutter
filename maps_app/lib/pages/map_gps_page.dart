@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:maps_app/bloc/my_ubication/my_ubication_bloc.dart';
 
 class MapGpsPage extends StatefulWidget {
@@ -35,7 +36,16 @@ class _MapGpsPageState extends State<MapGpsPage> {
     if (state.existUbication == false) {
       return Center(child: CircularProgressIndicator(strokeWidth: 2));
     } else {
-      return Text('${state.ubication?.longitude},${state.ubication?.latitude}');
+      final cameraPosition =
+          new CameraPosition(target: state.ubication!, zoom: 15);
+
+      return GoogleMap(
+        initialCameraPosition: cameraPosition,
+        mapType: MapType.hybrid,
+        myLocationEnabled: true,
+        compassEnabled: true,
+        myLocationButtonEnabled: true,
+      );
     }
   }
 }
