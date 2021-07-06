@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:maps_app/bloc/my_ubication/my_ubication_bloc.dart';
+import 'package:maps_app/bloc/map/maps_bloc.dart';
 
 class MapGpsPage extends StatefulWidget {
   @override
@@ -36,6 +38,8 @@ class _MapGpsPageState extends State<MapGpsPage> {
     if (state.existUbication == false) {
       return Center(child: CircularProgressIndicator(strokeWidth: 2));
     } else {
+      final mapBloc = BlocProvider.of<MapsBloc>(context);
+
       final cameraPosition =
           new CameraPosition(target: state.ubication!, zoom: 15);
 
@@ -45,6 +49,9 @@ class _MapGpsPageState extends State<MapGpsPage> {
         myLocationEnabled: true,
         compassEnabled: true,
         myLocationButtonEnabled: true,
+        zoomControlsEnabled: false,
+        onMapCreated: (GoogleMapController controller) =>
+            mapBloc.initMap(controller),
       );
     }
   }
