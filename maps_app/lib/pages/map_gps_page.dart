@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:maps_app/bloc/my_ubication/my_ubication_bloc.dart';
 import 'package:maps_app/bloc/map/maps_bloc.dart';
+import 'package:maps_app/widgets/widgets.dart';
 
 class MapGpsPage extends StatefulWidget {
   @override
@@ -30,7 +31,12 @@ class _MapGpsPageState extends State<MapGpsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocBuilder<MyUbicationBloc, MyUbicationState>(
-          builder: (_, state) => createMap(state)),
+        builder: (_, state) => createMap(state),
+      ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [BtnUbication()],
+      ),
     );
   }
 
@@ -45,7 +51,6 @@ class _MapGpsPageState extends State<MapGpsPage> {
 
       return GoogleMap(
         initialCameraPosition: cameraPosition,
-        mapType: MapType.hybrid,
         myLocationEnabled: true,
         compassEnabled: true,
         myLocationButtonEnabled: true,
