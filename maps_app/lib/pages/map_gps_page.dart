@@ -35,7 +35,10 @@ class _MapGpsPageState extends State<MapGpsPage> {
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: [BtnUbication()],
+        children: [
+          BtnUbication(),
+          BtnDraw(),
+        ],
       ),
     );
   }

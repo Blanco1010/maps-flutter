@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:flutter/material.dart' show Colors;
+import 'package:maps_app/bloc/my_ubication/my_ubication_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 
@@ -9,7 +11,7 @@ part 'maps_event.dart';
 part 'maps_state.dart';
 
 class MapsBloc extends Bloc<MapsEvent, MapsState> {
-  MapsBloc() : super(new MapsState());
+  MapsBloc() : super(MapsState());
 
   //Map Controller
   GoogleMapController? _mapController;
@@ -35,20 +37,42 @@ class MapsBloc extends Bloc<MapsEvent, MapsState> {
     this._mapController?.animateCamera(cameraUpdate);
   }
 
-  @override
   Stream<MapsState> mapEventToState(MapsEvent event) async* {
     if (event is OnMapReady) {
       await state.copyWith(mapReady: true);
     }
 
     if (event is OnLocationUpdate) {
-      List<LatLng> points = [...this._myRoute.points, event.ubication];
-      this._myRoute = this._myRoute.copyWith(pointsParam: points);
-
-      final currentPolylines = state.polylines;
-      currentPolylines?['mi_route'] = this._myRoute;
-
-      await state.copyWith(polylines: currentPolylines);
+      yield* this._onChangeUbication(event);
     }
+
+    if (event is OnChangeDraw) {
+      yield* _onChangeDraw(event);
+    }
+  }
+
+  Stream<MapsState> _onChangeUbication(OnLocationUpdate event) async* {
+    final List<LatLng> points = [...this._myRoute.points, event.ubication];
+    this._myRoute = this._myRoute.copyWith(pointsParam: points);
+
+    final currentPolylines = state.polylines;
+    currentPolylines?['mi_route'] = this._myRoute;
+
+    await state.copyWith(polylines: currentPolylines);
+  }
+
+  Stream<MapsState> _onChangeDraw(OnChangeDraw event) async* {
+    if (state.drawRoute) {
+      this._myRoute = this._myRoute.copyWith(colorParam: Colors.black);
+    } else {
+      this._myRoute = this._myRoute.copyWith(colorParam: Colors.transparent);
+      print(state.drawRoute);
+    }
+
+    final currentPolylines = state.polylines;
+    currentPolylines?['mi_route'] = this._myRoute;
+
+    await state.copyWith(drawRoute: !state.drawRoute);
+    print(state.drawRoute);
   }
 }
