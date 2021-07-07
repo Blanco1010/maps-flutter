@@ -46,6 +46,8 @@ class _MapGpsPageState extends State<MapGpsPage> {
     } else {
       final mapBloc = BlocProvider.of<MapsBloc>(context);
 
+      mapBloc.add(OnLocationUpdate(state.ubication!));
+
       final cameraPosition =
           new CameraPosition(target: state.ubication!, zoom: 15);
 
@@ -55,6 +57,7 @@ class _MapGpsPageState extends State<MapGpsPage> {
         compassEnabled: true,
         myLocationButtonEnabled: true,
         zoomControlsEnabled: false,
+        polylines: mapBloc.state.polylines!.values.toSet(),
         onMapCreated: (GoogleMapController controller) =>
             mapBloc.initMap(controller),
       );
