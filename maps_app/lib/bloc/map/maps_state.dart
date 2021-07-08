@@ -3,25 +3,33 @@ part of 'maps_bloc.dart';
 @immutable
 class MapsState {
   final bool mapReady;
-  late final bool drawRoute;
+  final bool drawRoute;
+  final bool followUbication;
+  final LatLng? centralUbication;
 
   // Polylines
   final Map<String, Polyline>? polylines;
 
   MapsState({
     this.mapReady = false,
-    this.drawRoute = true,
+    this.drawRoute = false,
+    this.followUbication = false,
     Map<String, Polyline>? polylines,
+    this.centralUbication,
   }) : this.polylines = polylines ?? new Map();
 
-  copyWith({
+  MapsState copyWith({
     bool? mapReady,
     bool? drawRoute,
+    bool? followUbication,
     Map<String, Polyline>? polylines,
+    LatLng? centralUbication,
   }) =>
       MapsState(
         mapReady: mapReady ?? this.mapReady,
-        polylines: polylines ?? this.polylines,
         drawRoute: drawRoute ?? this.drawRoute,
+        followUbication: followUbication ?? this.followUbication,
+        polylines: polylines ?? this.polylines,
+        centralUbication: centralUbication ?? this.centralUbication,
       );
 }

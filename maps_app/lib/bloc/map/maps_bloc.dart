@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart' show Colors;
-import 'package:maps_app/bloc/my_ubication/my_ubication_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 
@@ -18,9 +17,7 @@ class MapsBloc extends Bloc<MapsEvent, MapsState> {
 
   //Polylines
   Polyline _myRoute = new Polyline(
-    polylineId: PolylineId('my_route'),
-    width: 3,
-  );
+      polylineId: PolylineId('my_route'), width: 3, color: Colors.transparent);
 
   void initMap(GoogleMapController controller) {
     if (!state.mapReady) {
@@ -39,7 +36,7 @@ class MapsBloc extends Bloc<MapsEvent, MapsState> {
 
   Stream<MapsState> mapEventToState(MapsEvent event) async* {
     if (event is OnMapReady) {
-      await state.copyWith(mapReady: true);
+      yield state.copyWith(mapReady: true);
     }
 
     if (event is OnLocationUpdate) {
@@ -49,16 +46,30 @@ class MapsBloc extends Bloc<MapsEvent, MapsState> {
     if (event is OnChangeDraw) {
       yield* _onChangeDraw(event);
     }
+
+    if (event is OnFollowUbication) {
+      yield* _onFollowUbication(event);
+    }
+
+    if (event is OnMoveMap) {
+      print('object');
+      print(event.centralMap);
+      yield state.copyWith(centralUbication: event.centralMap);
+    }
   }
 
   Stream<MapsState> _onChangeUbication(OnLocationUpdate event) async* {
+    if (state.followUbication) {
+      this.moveCamera(event.ubication);
+    }
+
     final List<LatLng> points = [...this._myRoute.points, event.ubication];
     this._myRoute = this._myRoute.copyWith(pointsParam: points);
 
     final currentPolylines = state.polylines;
     currentPolylines?['mi_route'] = this._myRoute;
 
-    await state.copyWith(polylines: currentPolylines);
+    yield state.copyWith(polylines: currentPolylines);
   }
 
   Stream<MapsState> _onChangeDraw(OnChangeDraw event) async* {
@@ -66,13 +77,19 @@ class MapsBloc extends Bloc<MapsEvent, MapsState> {
       this._myRoute = this._myRoute.copyWith(colorParam: Colors.black);
     } else {
       this._myRoute = this._myRoute.copyWith(colorParam: Colors.transparent);
-      print(state.drawRoute);
     }
 
     final currentPolylines = state.polylines;
     currentPolylines?['mi_route'] = this._myRoute;
 
-    await state.copyWith(drawRoute: !state.drawRoute);
-    print(state.drawRoute);
+    yield state.copyWith(drawRoute: !state.drawRoute);
+  }
+
+  Stream<MapsState> _onFollowUbication(OnFollowUbication event) async* {
+    if (!state.followUbication) {
+      this.moveCamera(this._myRoute.points[this._myRoute.points.length - 1]);
+    }
+
+    yield state.copyWith(followUbication: !state.followUbication);
   }
 }

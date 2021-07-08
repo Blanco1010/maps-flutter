@@ -37,6 +37,7 @@ class _MapGpsPageState extends State<MapGpsPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           BtnUbication(),
+          BtnFollow(),
           BtnDraw(),
         ],
       ),
@@ -63,6 +64,9 @@ class _MapGpsPageState extends State<MapGpsPage> {
         polylines: mapBloc.state.polylines!.values.toSet(),
         onMapCreated: (GoogleMapController controller) =>
             mapBloc.initMap(controller),
+        onCameraMove: (cameraPosition) {
+          mapBloc.add(OnMoveMap(cameraPosition.target));
+        },
       );
     }
   }

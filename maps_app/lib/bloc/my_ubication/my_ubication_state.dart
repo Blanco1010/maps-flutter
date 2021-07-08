@@ -17,7 +17,7 @@ class MyUbicationState {
     bool? existUbication,
     LatLng? ubication,
   }) =>
-      new MyUbicationState(
+      MyUbicationState(
         following: following ?? this.following,
         existUbication: existUbication ?? this.existUbication,
         ubication: ubication ?? this.ubication,
