@@ -35,10 +35,13 @@ class _MapGpsPageState extends State<MapGpsPage> {
           BlocBuilder<MyUbicationBloc, MyUbicationState>(
             builder: (_, state) => createMap(state),
           ),
+          //TODO: Make the toggle when i'n manually
+
           Positioned(
             top: 10,
             child: SearchBar(),
           ),
+          MarkerManual()
         ],
       ),
       floatingActionButton: Column(
@@ -65,7 +68,7 @@ class _MapGpsPageState extends State<MapGpsPage> {
 
       return GoogleMap(
         initialCameraPosition: cameraPosition,
-        myLocationEnabled: false,
+        myLocationEnabled: true,
         compassEnabled: true,
         myLocationButtonEnabled: true,
         zoomControlsEnabled: false,
