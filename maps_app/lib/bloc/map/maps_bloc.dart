@@ -52,8 +52,6 @@ class MapsBloc extends Bloc<MapsEvent, MapsState> {
     }
 
     if (event is OnMoveMap) {
-      print('object');
-      print(event.centralMap);
       yield state.copyWith(centralUbication: event.centralMap);
     }
   }

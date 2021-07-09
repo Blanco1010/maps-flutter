@@ -30,8 +30,16 @@ class _MapGpsPageState extends State<MapGpsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<MyUbicationBloc, MyUbicationState>(
-        builder: (_, state) => createMap(state),
+      body: Stack(
+        children: [
+          BlocBuilder<MyUbicationBloc, MyUbicationState>(
+            builder: (_, state) => createMap(state),
+          ),
+          Positioned(
+            top: 10,
+            child: SearchBar(),
+          ),
+        ],
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -57,7 +65,7 @@ class _MapGpsPageState extends State<MapGpsPage> {
 
       return GoogleMap(
         initialCameraPosition: cameraPosition,
-        myLocationEnabled: true,
+        myLocationEnabled: false,
         compassEnabled: true,
         myLocationButtonEnabled: true,
         zoomControlsEnabled: false,
