@@ -73,12 +73,37 @@ class _BuildMarkerManual extends StatelessWidget {
               splashColor: Colors.transparent,
               elevation: 0,
               color: Colors.black,
-              onPressed: () {},
+              onPressed: () {
+                this.calculateDestination(context);
+              },
             ),
           ),
         )
         //Button destination confirm
       ],
     );
+  }
+
+  void calculateDestination(BuildContext context) async {
+    final trafficService = TrafficService();
+    final start = BlocProvider.of<MyUbicationBloc>(context).state.ubication;
+    final end = BlocProvider.of<MapsBloc>(context).state.centralUbication;
+    // get the traffic response
+    final trafficResponse =
+        await trafficService.getCoordsStartAndEnd(start!, end!);
+
+    // get the objets to use decode
+    final geometry = trafficResponse.routes[0].geometry;
+    final distance = trafficResponse.routes[0].distance;
+    final duration = trafficResponse.routes[0].duration;
+
+    //Decode the points of goemtry
+    // final points = Poly.Polyline.Decode(encodedString: geometry, precision: 6);
+
+    PolylinePoints polylinePoints = PolylinePoints();
+    final points = polylinePoints.decodePolyline(geometry);
+    print(points);
+
+    // final temp = points;
   }
 }

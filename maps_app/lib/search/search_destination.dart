@@ -42,7 +42,7 @@ class SearchDestination extends SearchDelegate<SearchResult> {
           leading: Icon(Icons.location_on),
           title: Text('Colocar ubicación manualmente'),
           onTap: () {
-            //TODO: need return
+            // need return  //
             print('Manualmente');
             this.close(context, SearchResult(cancel: false, manual: true));
           },
