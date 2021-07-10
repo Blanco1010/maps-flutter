@@ -35,7 +35,7 @@ class _MapGpsPageState extends State<MapGpsPage> {
           BlocBuilder<MyUbicationBloc, MyUbicationState>(
             builder: (_, state) => createMap(state),
           ),
-          //TODO: Make the toggle when i'n manually
+          // Make the toggle when i'm manually
 
           Positioned(
             top: 10,
