@@ -85,25 +85,36 @@ class _BuildMarkerManual extends StatelessWidget {
   }
 
   void calculateDestination(BuildContext context) async {
+    calculateAlert(context);
+
     final trafficService = TrafficService();
+    final mapBloc = BlocProvider.of<MapsBloc>(context);
+
     final start = BlocProvider.of<MyUbicationBloc>(context).state.ubication;
-    final end = BlocProvider.of<MapsBloc>(context).state.centralUbication;
+    final end = mapBloc.state.centralUbication;
+
     // get the traffic response
     final trafficResponse =
         await trafficService.getCoordsStartAndEnd(start!, end!);
 
     // get the objets to use decode
+
     final geometry = trafficResponse.routes[0].geometry;
     final distance = trafficResponse.routes[0].distance;
     final duration = trafficResponse.routes[0].duration;
 
     //Decode the points of goemtry
-    // final points = Poly.Polyline.Decode(encodedString: geometry, precision: 6);
+    PolylinePoints _polylinePoints = PolylinePoints();
+    final points = _polylinePoints.decodePolyline(geometry);
 
-    PolylinePoints polylinePoints = PolylinePoints();
-    final points = polylinePoints.decodePolyline(geometry);
-    print(points);
+// convert to LatLng
+    final List<LatLng> routeCoords =
+        points.map((e) => LatLng(e.latitude, e.longitude)).toList();
 
-    // final temp = points;
+    print(routeCoords);
+    mapBloc.add(OnCreateRouteInitialEnd(routeCoords, distance, duration));
+
+    Navigator.of(context).pop();
+    BlocProvider.of<SearchBloc>(context).add(OnDeactivateMarkerManual());
   }
 }

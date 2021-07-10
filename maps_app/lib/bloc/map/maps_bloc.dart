@@ -17,7 +17,16 @@ class MapsBloc extends Bloc<MapsEvent, MapsState> {
 
   //Polylines
   Polyline _myRoute = new Polyline(
-      polylineId: PolylineId('my_route'), width: 3, color: Colors.transparent);
+    polylineId: PolylineId('my_route'),
+    width: 3,
+    color: Colors.transparent,
+  );
+
+  Polyline _myRouteDestination = new Polyline(
+    polylineId: PolylineId('my_route_destination'),
+    width: 3,
+    color: Colors.black87,
+  );
 
   void initMap(GoogleMapController controller) {
     if (!state.mapReady) {
@@ -44,15 +53,19 @@ class MapsBloc extends Bloc<MapsEvent, MapsState> {
     }
 
     if (event is OnChangeDraw) {
-      yield* _onChangeDraw(event);
+      yield* this._onChangeDraw(event);
     }
 
     if (event is OnFollowUbication) {
-      yield* _onFollowUbication(event);
+      yield* this._onFollowUbication(event);
     }
 
     if (event is OnMoveMap) {
       yield state.copyWith(centralUbication: event.centralMap);
+    }
+
+    if (event is OnCreateRouteInitialEnd) {
+      yield* this._onCreateRouteInitialEnd(event);
     }
   }
 
@@ -89,5 +102,18 @@ class MapsBloc extends Bloc<MapsEvent, MapsState> {
     }
 
     yield state.copyWith(followUbication: !state.followUbication);
+  }
+
+  Stream<MapsState> _onCreateRouteInitialEnd(
+      OnCreateRouteInitialEnd event) async* {
+    this._myRouteDestination = this._myRouteDestination.copyWith(
+          pointsParam: event.routeCoordinates,
+        );
+
+    final currentPolylines = state.polylines;
+    currentPolylines?['my_route_destination'] = this._myRouteDestination;
+
+    // get points for drawing
+    yield state.copyWith(polylines: currentPolylines);
   }
 }

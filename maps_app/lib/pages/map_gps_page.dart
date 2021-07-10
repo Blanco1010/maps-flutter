@@ -37,10 +37,7 @@ class _MapGpsPageState extends State<MapGpsPage> {
           ),
           // Make the toggle when i'm manually
 
-          Positioned(
-            top: 10,
-            child: SearchBar(),
-          ),
+          Positioned(top: 10, child: SearchBar()),
           MarkerManual()
         ],
       ),
@@ -63,22 +60,26 @@ class _MapGpsPageState extends State<MapGpsPage> {
 
       mapBloc.add(OnLocationUpdate(state.ubication!));
 
-      final cameraPosition =
-          new CameraPosition(target: state.ubication!, zoom: 15);
-
-      return GoogleMap(
-        initialCameraPosition: cameraPosition,
-        myLocationEnabled: true,
-        compassEnabled: true,
-        myLocationButtonEnabled: true,
-        zoomControlsEnabled: false,
-        polylines: mapBloc.state.polylines!.values.toSet(),
-        onMapCreated: (GoogleMapController controller) =>
-            mapBloc.initMap(controller),
-        onCameraMove: (cameraPosition) {
-          mapBloc.add(OnMoveMap(cameraPosition.target));
-        },
+      final cameraPosition = new CameraPosition(
+        target: state.ubication!,
+        zoom: 15,
       );
+
+      return BlocBuilder<MapsBloc, MapsState>(builder: (context, _) {
+        return GoogleMap(
+          initialCameraPosition: cameraPosition,
+          myLocationEnabled: true,
+          compassEnabled: true,
+          myLocationButtonEnabled: true,
+          zoomControlsEnabled: false,
+          polylines: mapBloc.state.polylines!.values.toSet(),
+          onMapCreated: (GoogleMapController controller) =>
+              mapBloc.initMap(controller),
+          onCameraMove: (cameraPosition) {
+            mapBloc.add(OnMoveMap(cameraPosition.target));
+          },
+        );
+      });
     }
   }
 }

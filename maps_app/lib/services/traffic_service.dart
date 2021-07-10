@@ -25,7 +25,7 @@ class TrafficService {
 
     final resp = await this._dio.get(url, queryParameters: {
       'alternatives': 'true',
-      'geometries': 'polyline6',
+      'geometries': 'polyline',
       'steps': 'false',
       'access_token': _apiKey,
       'language': 'es',
