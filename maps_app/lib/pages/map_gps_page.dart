@@ -38,6 +38,7 @@ class _MapGpsPageState extends State<MapGpsPage> {
           // Make the toggle when i'm manually
 
           Positioned(top: 10, child: SearchBar()),
+
           MarkerManual()
         ],
       ),
