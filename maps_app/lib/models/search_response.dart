@@ -11,16 +11,16 @@ String searchResponseToJson(SearchResponse data) => json.encode(data.toJson());
 
 class SearchResponse {
   SearchResponse({
-    required this.type,
-    required this.query,
-    required this.features,
-    required this.attribution,
+    this.type,
+    this.query,
+    this.features,
+    this.attribution,
   });
 
-  String type;
-  List<String> query;
-  List<Feature> features;
-  String attribution;
+  String? type;
+  List<String>? query;
+  List<Feature>? features;
+  String? attribution;
 
   factory SearchResponse.fromJson(Map<String, dynamic> json) => SearchResponse(
         type: json["type"],
@@ -32,8 +32,8 @@ class SearchResponse {
 
   Map<String, dynamic> toJson() => {
         "type": type,
-        "query": List<dynamic>.from(query.map((x) => x)),
-        "features": List<dynamic>.from(features.map((x) => x.toJson())),
+        "query": List<dynamic>.from(query!.map((x) => x)),
+        "features": List<dynamic>.from(features!.map((x) => x.toJson())),
         "attribution": attribution,
       };
 }

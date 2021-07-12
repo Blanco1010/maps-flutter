@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' show LatLng;
+import 'package:maps_app/models/search_response.dart';
 import 'package:maps_app/models/search_result.dart';
 import 'package:maps_app/services/traffic_service.dart';
 
@@ -37,24 +38,66 @@ class SearchDestination extends SearchDelegate<SearchResult> {
 
   @override
   Widget buildResults(BuildContext context) {
-    this._trafficService.getResultWithQuery(this.query.trim(), proximity);
-    return Text('buildResults');
+    return _buildEmergenceResults();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return ListView(
-      children: [
-        ListTile(
-          leading: Icon(Icons.location_on),
-          title: Text('Colocar ubicación manualmente'),
-          onTap: () {
-            // need return  //
-            print('Manualmente');
-            this.close(context, SearchResult(cancel: false, manual: true));
+    if (this.query.length == 0) {
+      return ListView(
+        children: [
+          ListTile(
+            leading: Icon(Icons.location_on),
+            title: Text('Colocar ubicación manualmente'),
+            onTap: () {
+              // need return  //
+              print('Manualmente');
+              this.close(context, SearchResult(cancel: false, manual: true));
+            },
+          )
+        ],
+      );
+    }
+    return _buildEmergenceResults();
+  }
+
+  Widget _buildEmergenceResults() {
+    if (this.query.length == 0) {
+      return Container();
+    }
+
+    return FutureBuilder(
+      future:
+          this._trafficService.getResultWithQuery(this.query.trim(), proximity),
+      builder: (BuildContext context, AsyncSnapshot<SearchResponse> snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        final places = snapshot.data!.features;
+
+        if (places?.length == 0) {
+          return ListTile(
+            title: Text('No hay resultados con $query'),
+          );
+        }
+
+        return ListView.separated(
+          separatorBuilder: (_, i) => Divider(),
+          itemCount: places!.length,
+          itemBuilder: (_, i) {
+            final placer = places[i];
+            return ListTile(
+              leading: Icon(Icons.place),
+              title: Text(placer.textEs),
+              subtitle: Text(placer.placeNameEs),
+              onTap: () {
+                print(placer);
+              },
+            );
           },
-        )
-      ],
+        );
+      },
     );
   }
 }

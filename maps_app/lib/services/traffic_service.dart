@@ -38,19 +38,24 @@ class TrafficService {
     return _data;
   }
 
-  Future getResultWithQuery(String search, LatLng proximity) async {
+  Future<SearchResponse> getResultWithQuery(
+      String search, LatLng proximity) async {
     final url = '${this._baseUrlGeo}/mapbox.places/$search!.json';
 
-    final resp = await this._dio.get(url, queryParameters: {
-      'access_token': this._apiKey,
-      'cachebuster': '1626031008098',
-      'autocomplete': 'true',
-      'proximity': '${proximity.latitude},${proximity.longitude}',
-      'language': 'es'
-    });
+    try {
+      final resp = await this._dio.get(url, queryParameters: {
+        'access_token': this._apiKey,
+        'cachebuster': '1626031008098',
+        'autocomplete': 'true',
+        'proximity': '${proximity.longitude},${proximity.latitude}',
+        'language': 'es'
+      });
 
-    final searchResponde = searchResponseFromJson(resp.data);
+      final searchResponde = searchResponseFromJson(resp.data);
 
-    print(searchResponde);
+      return searchResponde;
+    } catch (e) {
+      return SearchResponse(features: []);
+    }
   }
 }
