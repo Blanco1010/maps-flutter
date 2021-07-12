@@ -1,9 +1,16 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' show LatLng;
+import 'package:maps_app/helpers/debouncer.dart';
 import 'package:maps_app/models/search_response.dart';
 import 'package:maps_app/models/traffic_response.dart';
 
 class TrafficService {
+  void dispose() {
+    _emergenceStreamControl.close();
+  }
+
   //Singleton
   TrafficService._privateConstructor();
   static final TrafficService _instance = TrafficService._privateConstructor();
@@ -12,6 +19,15 @@ class TrafficService {
   }
 
   final _dio = new Dio();
+
+  final debouncer = Debouncer<String>(duration: Duration(milliseconds: 400));
+
+  final StreamController<SearchResponse> _emergenceStreamControl =
+      new StreamController<SearchResponse>.broadcast();
+
+  Stream<SearchResponse> get emergenceStream =>
+      this._emergenceStreamControl.stream;
+
   final String _baseUrlDir = 'https://api.mapbox.com/directions/v5';
   final String _baseUrlGeo = 'https://api.mapbox.com/geocoding/v5';
   final String _apiKey =
@@ -40,6 +56,8 @@ class TrafficService {
 
   Future<SearchResponse> getResultWithQuery(
       String search, LatLng proximity) async {
+    print('Buscando!!!');
+
     final url = '${this._baseUrlGeo}/mapbox.places/$search!.json';
 
     try {
@@ -57,5 +75,22 @@ class TrafficService {
     } catch (e) {
       return SearchResponse(features: []);
     }
+  }
+
+// final debouncer = Debouncer<String>(duration: Duration(milliseconds: 500 ));
+
+  //Await a while to call function. avoid asking many request to API
+  void getSugerenciasPorQuery(String busqueda, LatLng proximidad) {
+    debouncer.value = '';
+    debouncer.onValue = (value) async {
+      final resultados = await this.getResultWithQuery(value, proximidad);
+      this._emergenceStreamControl.add(resultados);
+    };
+
+    final timer = Timer.periodic(Duration(milliseconds: 200), (_) {
+      debouncer.value = busqueda;
+    });
+
+    Future.delayed(Duration(milliseconds: 201)).then((_) => timer.cancel());
   }
 }

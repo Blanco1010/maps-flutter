@@ -107,7 +107,7 @@ class _BuildMarkerManual extends StatelessWidget {
     PolylinePoints _polylinePoints = PolylinePoints();
     final points = _polylinePoints.decodePolyline(geometry);
 
-// convert to LatLng
+    // convert to LatLng
     final List<LatLng> routeCoords =
         points.map((e) => LatLng(e.latitude, e.longitude)).toList();
 

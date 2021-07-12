@@ -9,8 +9,9 @@ class SearchDestination extends SearchDelegate<SearchResult> {
   final String searchFieldLabel;
   final TrafficService _trafficService;
   final LatLng proximity;
+  final List<SearchResult> history;
 
-  SearchDestination(this.proximity)
+  SearchDestination(this.proximity, this.history)
       : this.searchFieldLabel = 'Buscar...',
         this._trafficService = new TrafficService();
 
@@ -54,7 +55,18 @@ class SearchDestination extends SearchDelegate<SearchResult> {
               print('Manualmente');
               this.close(context, SearchResult(cancel: false, manual: true));
             },
-          )
+          ),
+          ...this
+              .history
+              .map((result) => ListTile(
+                    leading: Icon(Icons.history),
+                    title: Text(result.nameDestination ?? ''),
+                    subtitle: Text(result.description ?? ''),
+                    onTap: () {
+                      this.close(context, result);
+                    },
+                  ))
+              .toList()
         ],
       );
     }
@@ -66,9 +78,13 @@ class SearchDestination extends SearchDelegate<SearchResult> {
       return Container();
     }
 
-    return FutureBuilder(
-      future:
-          this._trafficService.getResultWithQuery(this.query.trim(), proximity),
+    this
+        ._trafficService
+        .getSugerenciasPorQuery(this.query.trim(), this.proximity);
+
+    return StreamBuilder(
+      // (this.query.trim(), proximity)
+      stream: this._trafficService.emergenceStream,
       builder: (BuildContext context, AsyncSnapshot<SearchResponse> snapshot) {
         if (!snapshot.hasData) {
           return Center(child: CircularProgressIndicator());
@@ -92,7 +108,19 @@ class SearchDestination extends SearchDelegate<SearchResult> {
               title: Text(placer.textEs),
               subtitle: Text(placer.placeNameEs),
               onTap: () {
-                print(placer);
+                this.close(
+                  context,
+                  SearchResult(
+                    cancel: false,
+                    manual: false,
+                    position: LatLng(
+                      placer.center[1],
+                      placer.center[0],
+                    ),
+                    nameDestination: placer.textEs,
+                    description: placer.placeNameEs,
+                  ),
+                );
               },
             );
           },

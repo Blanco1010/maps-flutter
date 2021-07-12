@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:maps_app/models/search_result.dart';
 import 'package:meta/meta.dart';
 
 part 'search_event.dart';
@@ -17,6 +18,18 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     if (event is OnDeactivateMarkerManual) {
       yield state.copyWith(selectManual: false);
+    }
+
+    if (event is OnAddHistory) {
+      final exist = state.history!
+          .where((result) =>
+              result.nameDestination == event.result.nameDestination)
+          .length;
+
+      if (exist == 0) {
+        final newHistory = [...state.history!, event.result];
+        yield state.copyWith(history: newHistory);
+      }
     }
   }
 }
