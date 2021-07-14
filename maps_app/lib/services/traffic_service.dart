@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' show LatLng;
 import 'package:maps_app/helpers/debouncer.dart';
+import 'package:maps_app/models/reserve_response.dart';
 import 'package:maps_app/models/search_response.dart';
 import 'package:maps_app/models/traffic_response.dart';
 
@@ -92,5 +93,19 @@ class TrafficService {
     });
 
     Future.delayed(Duration(milliseconds: 201)).then((_) => timer.cancel());
+  }
+
+  Future<ReverseResponse> getCoordinateInfo(LatLng destinationCoords) async {
+    final url =
+        '$_baseUrlGeo/mapbox.places/${destinationCoords.longitude},${destinationCoords.latitude}.json';
+
+    final resp = await this._dio.get(url, queryParameters: {
+      'access_token': _apiKey,
+      'language': 'es',
+    });
+
+    final _data = reverseResponseFromJson(resp.data);
+
+    return _data;
   }
 }

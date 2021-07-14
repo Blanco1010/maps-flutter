@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/material.dart' show Colors;
+import 'package:flutter/material.dart' show Colors, Offset;
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 
@@ -113,7 +113,33 @@ class MapsBloc extends Bloc<MapsEvent, MapsState> {
     final currentPolylines = state.polylines;
     currentPolylines?['my_route_destination'] = this._myRouteDestination;
 
+    //Markers
+
+    final markerInitial = new Marker(
+      markerId: MarkerId('initial'),
+      position: event.routeCoordinates[0],
+      infoWindow: InfoWindow(
+          title: 'Origen',
+          snippet: 'Esta es el punto inicial de mi casa',
+          anchor: Offset(0.5, 0.0),
+          onTap: () {
+            print('Test Ontap');
+          }),
+    );
+
+    final markerEnd = new Marker(
+      markerId: MarkerId('end'),
+      position: event.routeCoordinates[event.routeCoordinates.length - 1],
+    );
+
+    final newMarkers = {...state.markers};
+    newMarkers['initial'] = markerInitial;
+    newMarkers['end'] = markerEnd;
+
     // get points for drawing
-    yield state.copyWith(polylines: currentPolylines);
+    yield state.copyWith(
+      polylines: currentPolylines,
+      markers: newMarkers,
+    );
   }
 }

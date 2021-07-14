@@ -93,9 +93,12 @@ class _BuildMarkerManual extends StatelessWidget {
     final start = BlocProvider.of<MyUbicationBloc>(context).state.ubication;
     final end = mapBloc.state.centralUbication;
 
+    //Get information about ubication
+    trafficService.getCoordinateInfo(end!);
+
     // get the traffic response
     final trafficResponse =
-        await trafficService.getCoordsStartAndEnd(start!, end!);
+        await trafficService.getCoordsStartAndEnd(start!, end);
 
     // get the objets to use decode
 
