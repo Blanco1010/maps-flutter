@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart' show Colors, Offset;
+import 'package:maps_app/helpers/helpers.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 
@@ -113,11 +114,15 @@ class MapsBloc extends Bloc<MapsEvent, MapsState> {
     final currentPolylines = state.polylines;
     currentPolylines?['my_route_destination'] = this._myRouteDestination;
 
-    //Markers
+    //Icons for ubications
+    final iconInitial = await getNetworkImageMarker();
+    final iconDestination = await getAssetImageMarker();
 
+    //Markers
     final markerInitial = new Marker(
       markerId: MarkerId('initial'),
       position: event.routeCoordinates[0],
+      icon: iconInitial,
       infoWindow: InfoWindow(
         title: 'Mi ubicación',
         snippet: 'Duración recorrido: ${(event.duration / 60).floor()} minutos',
@@ -132,6 +137,7 @@ class MapsBloc extends Bloc<MapsEvent, MapsState> {
     final markerEnd = new Marker(
       markerId: MarkerId('end'),
       position: event.routeCoordinates[event.routeCoordinates.length - 1],
+      icon: iconDestination,
       infoWindow: InfoWindow(
         title: event.nameDestination,
         snippet: 'Distancia: $km Km',
@@ -145,7 +151,7 @@ class MapsBloc extends Bloc<MapsEvent, MapsState> {
 
     Future.delayed(Duration(milliseconds: 300)).then((value) => {
           // _mapController!.showMarkerInfoWindow(MarkerId('initial')),
-          _mapController!.showMarkerInfoWindow(MarkerId('end')),
+          // _mapController!.showMarkerInfoWindow(MarkerId('end')),
         });
 
     // get points for drawing
