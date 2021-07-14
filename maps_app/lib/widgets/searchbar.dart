@@ -88,6 +88,7 @@ class SearchBar extends StatelessWidget {
     final geometry = drivingTraffic.routes[0].geometry;
     final duration = drivingTraffic.routes[0].duration;
     final distance = drivingTraffic.routes[0].distance;
+    final nameDestination = result.nameDestination;
 
     //Decode the points of goemtry
     PolylinePoints _polylinePoints = PolylinePoints();
@@ -100,7 +101,13 @@ class SearchBar extends StatelessWidget {
     print(routeCoords);
 
     Navigator.of(context).pop();
-    mapBloc.add(OnCreateRouteInitialEnd(routeCoords, distance, duration));
+
+    mapBloc.add(OnCreateRouteInitialEnd(
+      routeCoords,
+      distance,
+      duration,
+      nameDestination!,
+    ));
 
     //Add a history
     final searchBloc = BlocProvider.of<SearchBloc>(context);

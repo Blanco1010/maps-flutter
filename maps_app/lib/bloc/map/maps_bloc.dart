@@ -119,22 +119,34 @@ class MapsBloc extends Bloc<MapsEvent, MapsState> {
       markerId: MarkerId('initial'),
       position: event.routeCoordinates[0],
       infoWindow: InfoWindow(
-          title: 'Origen',
-          snippet: 'Esta es el punto inicial de mi casa',
-          anchor: Offset(0.5, 0.0),
-          onTap: () {
-            print('Test Ontap');
-          }),
+        title: 'Mi ubicación',
+        snippet: 'Duración recorrido: ${(event.duration / 60).floor()} minutos',
+        anchor: Offset(0.5, 0.0),
+      ),
     );
+
+    double km = event.distance / 1000;
+    km = (km * 100).floor().toDouble();
+    km = (km / 100);
 
     final markerEnd = new Marker(
       markerId: MarkerId('end'),
       position: event.routeCoordinates[event.routeCoordinates.length - 1],
+      infoWindow: InfoWindow(
+        title: event.nameDestination,
+        snippet: 'Distancia: $km Km',
+        anchor: Offset(0.5, 0.0),
+      ),
     );
 
     final newMarkers = {...state.markers};
     newMarkers['initial'] = markerInitial;
     newMarkers['end'] = markerEnd;
+
+    Future.delayed(Duration(milliseconds: 300)).then((value) => {
+          // _mapController!.showMarkerInfoWindow(MarkerId('initial')),
+          _mapController!.showMarkerInfoWindow(MarkerId('end')),
+        });
 
     // get points for drawing
     yield state.copyWith(

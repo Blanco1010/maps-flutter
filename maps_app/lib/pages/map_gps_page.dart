@@ -70,9 +70,11 @@ class _MapGpsPageState extends State<MapGpsPage> {
         return GoogleMap(
           initialCameraPosition: cameraPosition,
           myLocationEnabled: true,
+          buildingsEnabled: false,
           compassEnabled: true,
           myLocationButtonEnabled: true,
           zoomControlsEnabled: false,
+          mapToolbarEnabled: false,
           polylines: mapBloc.state.polylines!.values.toSet(),
           markers: mapBloc.state.markers.values.toSet(),
           onMapCreated: (GoogleMapController controller) =>

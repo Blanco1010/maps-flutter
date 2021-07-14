@@ -94,7 +94,7 @@ class _BuildMarkerManual extends StatelessWidget {
     final end = mapBloc.state.centralUbication;
 
     //Get information about ubication
-    trafficService.getCoordinateInfo(end!);
+    final reserveResponse = await trafficService.getCoordinateInfo(end!);
 
     // get the traffic response
     final trafficResponse =
@@ -105,6 +105,7 @@ class _BuildMarkerManual extends StatelessWidget {
     final geometry = trafficResponse.routes[0].geometry;
     final distance = trafficResponse.routes[0].distance;
     final duration = trafficResponse.routes[0].duration;
+    final nameDestination = reserveResponse.features[0].text;
 
     //Decode the points of goemtry
     PolylinePoints _polylinePoints = PolylinePoints();
@@ -114,8 +115,12 @@ class _BuildMarkerManual extends StatelessWidget {
     final List<LatLng> routeCoords =
         points.map((e) => LatLng(e.latitude, e.longitude)).toList();
 
-    print(routeCoords);
-    mapBloc.add(OnCreateRouteInitialEnd(routeCoords, distance, duration));
+    mapBloc.add(OnCreateRouteInitialEnd(
+      routeCoords,
+      distance,
+      duration,
+      nameDestination,
+    ));
 
     Navigator.of(context).pop();
     BlocProvider.of<SearchBloc>(context).add(OnDeactivateMarkerManual());

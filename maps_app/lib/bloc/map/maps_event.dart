@@ -13,8 +13,14 @@ class OnCreateRouteInitialEnd extends MapsEvent {
   final List<LatLng> routeCoordinates;
   final double distance;
   final double duration;
+  final String nameDestination;
 
-  OnCreateRouteInitialEnd(this.routeCoordinates, this.distance, this.duration);
+  OnCreateRouteInitialEnd(
+    this.routeCoordinates,
+    this.distance,
+    this.duration,
+    this.nameDestination,
+  );
 }
 
 class OnMoveMap extends MapsEvent {
