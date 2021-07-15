@@ -39,7 +39,7 @@ class MarkerInitialPainter extends CustomPainter {
     final whiteBox = Rect.fromLTWH(40, 20, size.width - 64, 80);
     canvas.drawRect(whiteBox, paint);
 
-    // Box black
+    // Box blacks
     paint.color = Colors.black;
     final blackBox = Rect.fromLTWH(40, 20, 70, 80);
     canvas.drawRect(blackBox, paint);
