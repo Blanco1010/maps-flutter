@@ -115,11 +115,16 @@ class MapsBloc extends Bloc<MapsEvent, MapsState> {
     currentPolylines?['my_route_destination'] = this._myRouteDestination;
 
     //Icons for ubications
-    final iconInitial = await getNetworkImageMarker();
-    final iconDestination = await getAssetImageMarker();
+    // final iconInitial = await getNetworkImageMarker();
+    final iconInitial = await getMarkerInitialIcon(event.duration.toInt());
+
+    // final iconDestination = await getAssetImageMarker();
+    final iconDestination =
+        await getMarkerDestinationIcon(event.nameDestination, event.distance);
 
     //Markers
     final markerInitial = new Marker(
+      anchor: Offset(0.0, 1.0),
       markerId: MarkerId('initial'),
       position: event.routeCoordinates[0],
       icon: iconInitial,
@@ -141,8 +146,8 @@ class MapsBloc extends Bloc<MapsEvent, MapsState> {
       infoWindow: InfoWindow(
         title: event.nameDestination,
         snippet: 'Distancia: $km Km',
-        anchor: Offset(0.5, 0.0),
       ),
+      anchor: Offset(0.1, 1.0),
     );
 
     final newMarkers = {...state.markers};
